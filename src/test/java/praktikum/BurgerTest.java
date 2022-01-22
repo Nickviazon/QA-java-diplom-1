@@ -37,7 +37,10 @@ public class BurgerTest {
     }
 
     @Test
-    public void setBuns() {
+    public void setBunsSetsPassedBunToFieldInBurger() {
+        actualBurger.setBuns(mockedBun);
+        Bun actualBunInBurger = actualBurger.bun;
+        assertEquals(mockedBun, actualBunInBurger);
     }
 
     @Test
@@ -53,7 +56,7 @@ public class BurgerTest {
     }
 
     @Test
-    public void getPrice() {
+    public void getPriceReturnsSumOf() {
         actualBurger.setBuns(mockedBun);
         int randomIngredientsCount = new Random().nextInt(10);
         addIngredientsToTestedBurger(randomIngredientsCount);
