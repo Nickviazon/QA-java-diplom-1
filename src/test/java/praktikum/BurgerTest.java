@@ -1,11 +1,13 @@
 package praktikum;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import praktikum.POJOforTests.BurgerData;
 
 import java.util.Random;
 import java.util.stream.Stream;
@@ -22,18 +24,26 @@ public class BurgerTest {
     @Mock
     private Ingredient mockedIngredient;
 
-    public Burger actualBurger;
+    private static Burger actualBurger;
+    private static String bunName;
+    private static String ingredientName;
+    private static float priceForBunAndIngredient;
+    private static IngredientType ingredientType;
 
-    private static final float PRICE_FOR_BUN_AND_INGREDIENT = 1F;
-    private static final String BUN_NAME = "bun";
-    private static final String INGREDIENT_NAME  = "ingredient";
-    private static final IngredientType INGREDIENT_TYPE = IngredientType.values()[0];
+    @BeforeClass
+    public static void setUpData() {
+        BurgerData burgerData = new BurgerData();
+        bunName = burgerData.getBunName();
+        ingredientName = burgerData.getIngredientName();
+        priceForBunAndIngredient = burgerData.getPriceForBunAndIngredient();
+        ingredientType = burgerData.getIngredientType();
+    }
 
     @Before
     public void setUp() {
         actualBurger = new Burger();
-        Mockito.when(mockedBun.getPrice()).thenReturn(PRICE_FOR_BUN_AND_INGREDIENT);
-        Mockito.when(mockedIngredient.getPrice()).thenReturn(PRICE_FOR_BUN_AND_INGREDIENT);
+        Mockito.when(mockedBun.getPrice()).thenReturn(priceForBunAndIngredient);
+        Mockito.when(mockedIngredient.getPrice()).thenReturn(priceForBunAndIngredient);
     }
 
     @Test
@@ -56,7 +66,7 @@ public class BurgerTest {
     }
 
     @Test
-    public void getPriceReturnsSumOf() {
+    public void getPriceShouldReturnSumPriceOfAllBurgersComponents() {
         actualBurger.setBuns(mockedBun);
         int randomIngredientsCount = new Random().nextInt(10);
         addIngredientsToTestedBurger(randomIngredientsCount);
@@ -70,20 +80,20 @@ public class BurgerTest {
     }
 
     @Test
-    public void getReceipt() {
-        Mockito.when(mockedBun.getName()).thenReturn(BUN_NAME);
-        Mockito.when(mockedIngredient.getName()).thenReturn(INGREDIENT_NAME);
-        Mockito.when(mockedIngredient.getType()).thenReturn(INGREDIENT_TYPE);
+    public void getReceiptShouldReturnStringThatDisplaysBurger() {
+        Mockito.when(mockedBun.getName()).thenReturn(bunName);
+        Mockito.when(mockedIngredient.getName()).thenReturn(ingredientName);
+        Mockito.when(mockedIngredient.getType()).thenReturn(ingredientType);
 
         int randomIngredientsCount = new Random().nextInt(10);
         addIngredientsToTestedBurger(randomIngredientsCount);
 
-        StringBuilder expectedReceiptBuilder = new StringBuilder(String.format("(==== %s ====)%n", BUN_NAME));
+        StringBuilder expectedReceiptBuilder = new StringBuilder(String.format("(==== %s ====)%n", bunName));
         for (int i = 0; i < randomIngredientsCount; i++) {
-            expectedReceiptBuilder.append(String.format("= %s %s =%n", INGREDIENT_TYPE.toString().toLowerCase(),
-                    INGREDIENT_NAME));
+            expectedReceiptBuilder.append(String.format("= %s %s =%n", ingredientType.toString().toLowerCase(),
+                    ingredientName));
         }
-        expectedReceiptBuilder.append(String.format("(==== %s ====)%n", BUN_NAME));
+        expectedReceiptBuilder.append(String.format("(==== %s ====)%n", bunName));
         expectedReceiptBuilder.append(String.format("%nPrice: %f%n", calculateExpectedBurgerPrice(randomIngredientsCount)));
         String expectedReceipt = expectedReceiptBuilder.toString();
 
@@ -103,7 +113,7 @@ public class BurgerTest {
     }
 
     private float calculateExpectedBurgerPrice(int ingredientCount) {
-        return PRICE_FOR_BUN_AND_INGREDIENT * 2 + PRICE_FOR_BUN_AND_INGREDIENT * ingredientCount;
+        return priceForBunAndIngredient * 2 + priceForBunAndIngredient * ingredientCount;
     }
 
 }
