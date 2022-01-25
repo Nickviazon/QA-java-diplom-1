@@ -2,7 +2,7 @@ package praktikum;
 
 import org.junit.Before;
 import org.junit.Test;
-import praktikum.POJOforTests.IngredientData;
+import praktikum.dataObjects.IngredientData;
 
 import static org.junit.Assert.assertEquals;
 
@@ -14,10 +14,9 @@ public class NotParameterizedIngredientTest {
 
     @Before
     public void setUpIngredient() {
-        IngredientData expectedIngredient = new IngredientData();
-        expectedIngredientName = expectedIngredient.getIngredientName();
-        expectedIngredientPrice = expectedIngredient.getIngredientPrice();
-        IngredientType ingredientType = expectedIngredient.getIngredientType();
+        expectedIngredientName = IngredientData.getIngredientName();
+        expectedIngredientPrice = IngredientData.getIngredientPrice();
+        IngredientType ingredientType = IngredientData.getIngredientType();
         actualIngredient = new Ingredient(ingredientType, expectedIngredientName, expectedIngredientPrice);
     }
 

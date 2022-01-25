@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import praktikum.POJOforTests.IngredientData;
+import praktikum.dataObjects.IngredientData;
 
 import java.util.Arrays;
 
@@ -33,9 +33,8 @@ public class ParameterizedIngredientTest {
 
     @Before
     public void setUpIngredient() {
-        IngredientData ingredientData = new IngredientData();
-        String ingredientName = ingredientData.getIngredientName();
-        float ingredientPrice = ingredientData.getIngredientPrice();
+        String ingredientName = IngredientData.getIngredientName();
+        float ingredientPrice = IngredientData.getIngredientPrice();
         actualIngredient = new Ingredient(actualIngredientType, ingredientName, ingredientPrice);
     }
 
