@@ -2,6 +2,7 @@ package praktikum;
 
 import org.junit.Before;
 import org.junit.Test;
+import praktikum.dataObjects.BunData;
 
 import static org.junit.Assert.assertEquals;
 
@@ -13,8 +14,8 @@ public class BunTest {
 
     @Before
     public void BunInit() {
-        expectedNameBun = "testBun";
-        expectedPriceBun = 150.0F;
+        expectedNameBun = BunData.getBunName();
+        expectedPriceBun = BunData.getBunPrice();
         testedBun = new Bun(expectedNameBun, expectedPriceBun);
     }
 
