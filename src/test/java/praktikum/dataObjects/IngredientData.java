@@ -1,4 +1,4 @@
-package praktikum.POJOforTests;
+package praktikum.dataObjects;
 
 import praktikum.IngredientType;
 
@@ -7,15 +7,15 @@ public class IngredientData {
     private static final float INGREDIENT_PRICE = 1f;
     private static final IngredientType INGREDIENT_TYPE = IngredientType.values()[0];
 
-    public String getIngredientName() {
+    public static String getIngredientName() {
         return INGREDIENT_NAME;
     }
 
-    public float getIngredientPrice() {
+    public static float getIngredientPrice() {
         return INGREDIENT_PRICE;
     }
 
-    public IngredientType getIngredientType() {
+    public static IngredientType getIngredientType() {
         return  INGREDIENT_TYPE;
     }
 }

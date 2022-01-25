@@ -7,8 +7,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import praktikum.POJOforTests.BurgerData;
+import praktikum.dataObjects.BurgerData;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.stream.Stream;
 
@@ -27,23 +29,27 @@ public class BurgerTest {
     private static Burger actualBurger;
     private static String bunName;
     private static String ingredientName;
-    private static float priceForBunAndIngredient;
+    private static float ingredientPrice;
+    private static float bunPrice;
     private static IngredientType ingredientType;
 
     @BeforeClass
     public static void setUpData() {
-        BurgerData burgerData = new BurgerData();
-        bunName = burgerData.getBunName();
-        ingredientName = burgerData.getIngredientName();
-        priceForBunAndIngredient = burgerData.getPriceForBunAndIngredient();
-        ingredientType = burgerData.getIngredientType();
+        bunName = BurgerData.getBunName();
+        bunPrice = BurgerData.getBunPrice();
+        ingredientName = BurgerData.getIngredientName();
+        ingredientPrice = BurgerData.getIngredientPrice();
+        ingredientType = BurgerData.getIngredientType();
     }
 
     @Before
     public void setUp() {
         actualBurger = new Burger();
-        Mockito.when(mockedBun.getPrice()).thenReturn(priceForBunAndIngredient);
-        Mockito.when(mockedIngredient.getPrice()).thenReturn(priceForBunAndIngredient);
+        Mockito.when(mockedBun.getPrice()).thenReturn(bunPrice);
+        Mockito.when(mockedIngredient.getPrice()).thenReturn(ingredientPrice);
+        Mockito.when(mockedBun.getName()).thenReturn(bunName);
+        Mockito.when(mockedIngredient.getName()).thenReturn(ingredientName);
+        Mockito.when(mockedIngredient.getType()).thenReturn(ingredientType);
     }
 
     @Test
@@ -54,15 +60,68 @@ public class BurgerTest {
     }
 
     @Test
-    public void addIngredient() {
+    public void addIngredientShouldAddIngredientToListOfIngredients() {
+        int ingredientsCount = new Random().nextInt(10);
+        List<Ingredient> expectedIngredientsInBurger = new ArrayList<>();
+        List<Ingredient> actualIngredientsInBurger = actualBurger.ingredients;
+
+        for(int i = 0; i < ingredientsCount; i++) {
+            expectedIngredientsInBurger.add(mockedIngredient);
+            actualBurger.addIngredient(mockedIngredient);
+        }
+
+        assertEquals(expectedIngredientsInBurger, actualIngredientsInBurger);
+
     }
 
     @Test
-    public void removeIngredient() {
+    public void removeIngredientRemoveIngredientFormListWithPassedIndex() {
+        int ingredientsCount = new Random().nextInt(10);
+        List<Ingredient> expectedIngredientsInBurger = new ArrayList<>();
+        List<Ingredient> actualIngredientsInBurger = actualBurger.ingredients;
+
+        for(int i = 0; i < ingredientsCount; i++) {
+            expectedIngredientsInBurger.add(mockedIngredient);
+            actualBurger.addIngredient(mockedIngredient);
+        }
+
+        int indexOfRemovedIngredient = new Random().nextInt(ingredientsCount);
+        expectedIngredientsInBurger.remove(indexOfRemovedIngredient);
+        actualBurger.removeIngredient(indexOfRemovedIngredient);
+
+        assertEquals(expectedIngredientsInBurger, actualIngredientsInBurger);
     }
 
+    // В данном тесте не использовал замоканный ингридиент,
+    // т.к. все элементы массива ссылваются на 1 объект
+    // из чего следует что, как не меняй местами ссылки на 1 объект всегда будет ложнопозитивный результат
     @Test
-    public void moveIngredient() {
+    public void moveIngredientShouldMoveIngredientToPassedIndex() {
+
+        int ingredientsCount = new Random().nextInt(10);
+        while (ingredientsCount == 1) {
+            ingredientsCount = new Random().nextInt(10);
+        }
+        List<Ingredient> expectedIngredientsInBurger = new ArrayList<>();
+        List<Ingredient> actualIngredientsInBurger = actualBurger.ingredients;
+        Ingredient ingredientToBurger;
+
+        for(int i = 0; i < ingredientsCount; i++) {
+            ingredientToBurger = new Ingredient(ingredientType, ingredientName, ingredientPrice);
+            expectedIngredientsInBurger.add(ingredientToBurger);
+            actualBurger.addIngredient(ingredientToBurger);
+        }
+
+        int oldIndex = new Random().nextInt(ingredientsCount);
+        int newIndex = new Random().nextInt(ingredientsCount);
+        while (oldIndex == newIndex) {
+            oldIndex = new Random().nextInt(ingredientsCount);
+        }
+
+        expectedIngredientsInBurger.add(newIndex, expectedIngredientsInBurger.remove(oldIndex));
+        actualBurger.moveIngredient(oldIndex, newIndex);
+
+        assertEquals(expectedIngredientsInBurger, actualIngredientsInBurger);
     }
 
     @Test
@@ -81,9 +140,6 @@ public class BurgerTest {
 
     @Test
     public void getReceiptShouldReturnStringThatDisplaysBurger() {
-        Mockito.when(mockedBun.getName()).thenReturn(bunName);
-        Mockito.when(mockedIngredient.getName()).thenReturn(ingredientName);
-        Mockito.when(mockedIngredient.getType()).thenReturn(ingredientType);
 
         int randomIngredientsCount = new Random().nextInt(10);
         addIngredientsToTestedBurger(randomIngredientsCount);
@@ -113,7 +169,7 @@ public class BurgerTest {
     }
 
     private float calculateExpectedBurgerPrice(int ingredientCount) {
-        return priceForBunAndIngredient * 2 + priceForBunAndIngredient * ingredientCount;
+        return bunPrice * 2 + ingredientPrice * ingredientCount;
     }
 
 }
