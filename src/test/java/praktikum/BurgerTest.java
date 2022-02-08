@@ -32,6 +32,7 @@ public class BurgerTest {
     private static float ingredientPrice;
     private static float bunPrice;
     private static IngredientType ingredientType;
+    private static final int INGREDIENTS_COUNT = 10;
 
     @BeforeClass
     public static void setUpData() {
@@ -61,11 +62,10 @@ public class BurgerTest {
 
     @Test
     public void addIngredientShouldAddIngredientToListOfIngredients() {
-        int ingredientsCount = new Random().nextInt(10);
         List<Ingredient> expectedIngredientsInBurger = new ArrayList<>();
         List<Ingredient> actualIngredientsInBurger = actualBurger.ingredients;
 
-        for(int i = 0; i < ingredientsCount; i++) {
+        for(int i = 0; i < INGREDIENTS_COUNT; i++) {
             expectedIngredientsInBurger.add(mockedIngredient);
             actualBurger.addIngredient(mockedIngredient);
         }
@@ -76,16 +76,15 @@ public class BurgerTest {
 
     @Test
     public void removeIngredientRemoveIngredientFormListWithPassedIndex() {
-        int ingredientsCount = new Random().nextInt(10);
         List<Ingredient> expectedIngredientsInBurger = new ArrayList<>();
         List<Ingredient> actualIngredientsInBurger = actualBurger.ingredients;
 
-        for(int i = 0; i < ingredientsCount; i++) {
+        for(int i = 0; i < INGREDIENTS_COUNT; i++) {
             expectedIngredientsInBurger.add(mockedIngredient);
             actualBurger.addIngredient(mockedIngredient);
         }
 
-        int indexOfRemovedIngredient = new Random().nextInt(ingredientsCount);
+        int indexOfRemovedIngredient = new Random().nextInt(INGREDIENTS_COUNT);
         expectedIngredientsInBurger.remove(indexOfRemovedIngredient);
         actualBurger.removeIngredient(indexOfRemovedIngredient);
 
@@ -98,24 +97,20 @@ public class BurgerTest {
     @Test
     public void moveIngredientShouldMoveIngredientToPassedIndex() {
 
-        int ingredientsCount = new Random().nextInt(10);
-        while (ingredientsCount == 1) {
-            ingredientsCount = new Random().nextInt(10);
-        }
         List<Ingredient> expectedIngredientsInBurger = new ArrayList<>();
         List<Ingredient> actualIngredientsInBurger = actualBurger.ingredients;
         Ingredient ingredientToBurger;
 
-        for(int i = 0; i < ingredientsCount; i++) {
+        for(int i = 0; i < INGREDIENTS_COUNT; i++) {
             ingredientToBurger = new Ingredient(ingredientType, ingredientName, ingredientPrice);
             expectedIngredientsInBurger.add(ingredientToBurger);
             actualBurger.addIngredient(ingredientToBurger);
         }
 
-        int oldIndex = new Random().nextInt(ingredientsCount);
-        int newIndex = new Random().nextInt(ingredientsCount);
+        int oldIndex = new Random().nextInt(INGREDIENTS_COUNT);
+        int newIndex = new Random().nextInt(INGREDIENTS_COUNT);
         while (oldIndex == newIndex) {
-            oldIndex = new Random().nextInt(ingredientsCount);
+            oldIndex = new Random().nextInt(INGREDIENTS_COUNT);
         }
 
         expectedIngredientsInBurger.add(newIndex, expectedIngredientsInBurger.remove(oldIndex));
@@ -127,13 +122,12 @@ public class BurgerTest {
     @Test
     public void getPriceShouldReturnSumPriceOfAllBurgersComponents() {
         actualBurger.setBuns(mockedBun);
-        int randomIngredientsCount = new Random().nextInt(10);
-        addIngredientsToTestedBurger(randomIngredientsCount);
+        addIngredientsToTestedBurger(INGREDIENTS_COUNT);
 
         float actualPrice = actualBurger.getPrice();
         Mockito.verify(mockedBun).getPrice();
-        Mockito.verify(mockedIngredient, times(randomIngredientsCount)).getPrice();
-        float expectedPrice = calculateExpectedBurgerPrice(randomIngredientsCount);
+        Mockito.verify(mockedIngredient, times(INGREDIENTS_COUNT)).getPrice();
+        float expectedPrice = calculateExpectedBurgerPrice(INGREDIENTS_COUNT);
 
         assertEquals(expectedPrice, actualPrice, 0.0001);
     }
@@ -141,24 +135,23 @@ public class BurgerTest {
     @Test
     public void getReceiptShouldReturnStringThatDisplaysBurger() {
 
-        int randomIngredientsCount = new Random().nextInt(10);
-        addIngredientsToTestedBurger(randomIngredientsCount);
+        addIngredientsToTestedBurger(INGREDIENTS_COUNT);
 
         StringBuilder expectedReceiptBuilder = new StringBuilder(String.format("(==== %s ====)%n", bunName));
-        for (int i = 0; i < randomIngredientsCount; i++) {
+        for (int i = 0; i < INGREDIENTS_COUNT; i++) {
             expectedReceiptBuilder.append(String.format("= %s %s =%n", ingredientType.toString().toLowerCase(),
                     ingredientName));
         }
         expectedReceiptBuilder.append(String.format("(==== %s ====)%n", bunName));
-        expectedReceiptBuilder.append(String.format("%nPrice: %f%n", calculateExpectedBurgerPrice(randomIngredientsCount)));
+        expectedReceiptBuilder.append(String.format("%nPrice: %f%n", calculateExpectedBurgerPrice(INGREDIENTS_COUNT)));
         String expectedReceipt = expectedReceiptBuilder.toString();
 
         actualBurger.setBuns(mockedBun);
         String actualReceipt = actualBurger.getReceipt();
 
         Mockito.verify(mockedBun, Mockito.times(2)).getName();
-        Mockito.verify(mockedIngredient, times(randomIngredientsCount)).getName();
-        Mockito.verify(mockedIngredient, times(randomIngredientsCount)).getType();
+        Mockito.verify(mockedIngredient, times(INGREDIENTS_COUNT)).getName();
+        Mockito.verify(mockedIngredient, times(INGREDIENTS_COUNT)).getType();
         assertEquals(expectedReceipt, actualReceipt);
 
     }
